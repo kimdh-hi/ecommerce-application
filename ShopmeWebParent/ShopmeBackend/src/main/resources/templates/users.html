@@ -74,6 +74,10 @@
         <a th:href="@{/users/new}">사용자 추가</a>
     </div>
 
+    <div th:if="${message != null}">
+        <p class="alert alert-success text-center" th:text="${message}"></p>
+    </div>
+
     <div>
         <table class="table table-responsive-xl table-striped table-hover">
             <thead class="table-dark">
