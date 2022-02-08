@@ -73,7 +73,8 @@
     <h2>사용자 관리 | 추가</h2>
 </div>
 
-<form th:action="@{/users/save}" th:object="${user}" method="post" style="max-width: 700px; margin: 0 auto">
+<form th:action="@{/users/save}" th:object="${user}" method="post" onsubmit="return checkDuplicateEmail(this)"
+      style="max-width: 700px; margin: 0 auto">
     <div class="border border-secondary rounded p-3">
         <div class="form-group row">
             <label class="col-sm-4 col-form-label">E-mail</label>
@@ -132,17 +133,60 @@
     </div>
 </form>
 
-<div class="text-center">
-    <p>Copyright &copy; kimdh-hi</p>
+<div id="modalDialog" class="modal fade text-center">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="modalTitle">Warning</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <span id="modalBody"></span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">닫기</button>
+            </div>
+        </div>
+    </div>
 </div>
+
+<footer class="text-center">
+    <p>Copyright &copy; kimdh-hi</p>
+</footer>
 
 </body>
 
 <script type="text/javascript">
+    let baseUrl = "/ShopmeAdmin";
     $(document).ready(() => {
         $('#buttonCancel').on('click', () => {
-            window.location = "/ShopmeAdmin/users"
+            window.location = "/ShopmeAdmin/users";
         })
     })
+
+    function checkDuplicateEmail(form) {
+        let url = baseUrl + "/users/check-emai";
+        let email = $("#email").val();
+        let csrf = $("input[name='_csrf']").val();
+        let params = {"email": email, "_csrf": csrf}
+        $("#modalDialog").modal();
+        $.post(url, params, (res) => {
+            if (res === "Ok") {
+                form.submit();
+            } else if (res === "Duplicated") {
+                showModalDialog("Warning", "중복된 Email이 존재합니다. Email : " + email);
+            }
+        }).fail(() => {
+            showModalDialog("Error", "에러 발생 : " + res);
+        });
+
+        return false;
+    }
+
+    function showModalDialog(title, message) {
+        $("#modalTitle").text(title);
+        $("#modalBody").text(message)
+        $("#modal").modal();
+    }
 </script>
 </html>

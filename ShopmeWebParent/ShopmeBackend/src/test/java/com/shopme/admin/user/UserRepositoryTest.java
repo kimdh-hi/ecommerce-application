@@ -62,6 +62,21 @@ public class UserRepositoryTest {
     void testDeleteById() {
         Long deleteId = 2L;
         userRepository.deleteById(deleteId);
+    }
 
+    @Test
+    void findUserByEmailDuplicated() {
+        String email = "admin@shop.me.com";
+        User user = userRepository.findUserByEmail(email).get();
+
+        assertThat(user).isNotNull();
+    }
+
+    @Test
+    void findUserByEmailUnique() {
+        String email = "no-exist-email@nono.nono";
+        boolean empty = userRepository.findUserByEmail(email).isEmpty();
+
+        assertThat(empty).isEqualTo(true);
     }
 }

@@ -33,6 +33,9 @@ public class UserService {
         userRepository.save(user);
     }
 
+    public boolean isUniqueEmail(String email) {
+        return userRepository.findUserByEmail(email).isEmpty();
+    }
 
     private void encodePassword(User user) {
         String encodedPassword = passwordEncoder.encode(user.getPassword());
