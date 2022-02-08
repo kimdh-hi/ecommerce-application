@@ -86,14 +86,14 @@
         <div class="form-group row">
             <label class="col-sm-4 col-form-label">First Name</label>
             <div class="col-sm-8">
-                <input type="text" class="form-control" th:field="*{firstName}" required minlength="2" maxlength="45"/>
+                <input type="text" class="form-control" th:field="*{firstName}" required minlength="1" maxlength="45"/>
             </div>
         </div>
 
         <div class="form-group row">
             <label class="col-sm-4 col-form-label">Last Name</label>
             <div class="col-sm-8">
-                <input type="text" class="form-control" th:field="*{lastName}" required minlength="2" maxlength="45"/>
+                <input type="text" class="form-control" th:field="*{lastName}" required minlength="1" maxlength="45"/>
             </div>
         </div>
 
@@ -122,7 +122,7 @@
         <div class="form-group row">
             <label class="col-sm-4 col-form-label">활성화</label>
             <div class="col-sm-8">
-                <input type="checkbox" th:field="*{enabled}" checked/>
+                <input type="checkbox" th:field="*{enabled}"/>
             </div>
         </div>
 
@@ -169,16 +169,16 @@
         let email = $("#email").val();
         let csrf = $("input[name='_csrf']").val();
         let params = {"email": email, "_csrf": csrf}
-        $("#modalDialog").modal();
         $.post(url, params, (res) => {
+            console.log(res)
             if (res === "Ok") {
                 form.submit();
             } else if (res === "Duplicated") {
                 showModalDialog("Warning", "중복된 Email이 존재합니다. Email : " + email);
             }
-        }).fail(() => {
-            showModalDialog("Error", "에러 발생 : " + res);
-        });
+        }).fail((error) => {
+            showModalDialog("Error", "예상치 못한 에러가 발생했습니다.");
+        })
 
         return false;
     }
@@ -186,7 +186,7 @@
     function showModalDialog(title, message) {
         $("#modalTitle").text(title);
         $("#modalBody").text(message)
-        $("#modal").modal();
+        $("#modalDialog").modal();
     }
 </script>
 </html>
