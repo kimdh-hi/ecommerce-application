@@ -8,7 +8,7 @@
     <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
     <script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
 
-    <title>사용자 관리 | 추가</title>
+    <title>[[${pageTitle}]]</title>
 
 </head>
 
@@ -70,11 +70,12 @@
 </div>
 
 <div>
-    <h2>사용자 관리 | 추가</h2>
+    <h2>사용자 관리 | [[${pageTitle}]]</h2>
 </div>
 
 <form th:action="@{/users/save}" th:object="${user}" method="post" onsubmit="return checkDuplicateEmail(this)"
       style="max-width: 700px; margin: 0 auto">
+    <input type="hidden" th:field="*{id}"/>
     <div class="border border-secondary rounded p-3">
         <div class="form-group row">
             <label class="col-sm-4 col-form-label">E-mail</label>
@@ -100,7 +101,10 @@
         <div class="form-group row">
             <label class="col-sm-4 col-form-label">비밀번호</label>
             <div class="col-sm-8">
-                <input type="password" class="form-control" th:field="*{password}" required minlength="8"
+                <input th:if="${user.id == null}" type="password" class="form-control" th:field="*{password}" required minlength="8"
+                       maxlength="128"/>
+
+                <input th:if="${user.id != null}" type="password" class="form-control" th:field="*{password}" minlength="8"
                        maxlength="128"/>
             </div>
         </div>
@@ -165,16 +169,18 @@
     })
 
     function checkDuplicateEmail(form) {
-        let url = baseUrl + "/users/check-emai";
+        let url = baseUrl + "/users/check-email";
+        let userId = $("#id").val();
         let email = $("#email").val();
         let csrf = $("input[name='_csrf']").val();
-        let params = {"email": email, "_csrf": csrf}
+        let params = {"userId": userId,"email": email, "_csrf": csrf}
         $.post(url, params, (res) => {
-            console.log(res)
             if (res === "Ok") {
                 form.submit();
             } else if (res === "Duplicated") {
                 showModalDialog("Warning", "중복된 Email이 존재합니다. Email : " + email);
+            } else {
+                showModalDialog("Error", "예상치 못한 에러가 발생했습니다.");
             }
         }).fail((error) => {
             showModalDialog("Error", "예상치 못한 에러가 발생했습니다.");

@@ -30,6 +30,15 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
+    public void update(User user) {
+        this.email = user.email;
+        this.password = user.password;
+        this.firstName = user.firstName;
+        this.lastName = user.lastName;
+        this.enabled = user.enabled;
+        this.roles = user.getRoles();
+    }
+
     public User() {}
 
     public User(String email, String password, String firstName, String lastName) {

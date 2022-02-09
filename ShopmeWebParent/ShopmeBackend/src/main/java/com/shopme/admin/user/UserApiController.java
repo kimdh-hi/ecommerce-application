@@ -1,8 +1,8 @@
 package com.shopme.admin.user;
 
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.shopme.admin.user.dto.request.EmailDuplicateCheckRequest;
+import org.springframework.data.repository.query.Param;
+import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/users")
 @RestController
@@ -15,7 +15,7 @@ public class UserApiController {
     }
 
     @PostMapping("/check-email")
-    public String checkDuplicateEmail(String email) {
-        return userService.isUniqueEmail(email) ? "Ok" : "Duplicated";
+    public String checkDuplicateEmail(@Param("usreId") Long userId, @Param("email") String email) {
+        return userService.isUniqueEmail(userId, email) ? "Ok" : "Duplicated";
     }
 }
