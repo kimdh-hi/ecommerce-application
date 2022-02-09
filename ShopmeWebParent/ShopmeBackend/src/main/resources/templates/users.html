@@ -102,7 +102,7 @@
                     <td th:text="${user.email}"></td>
                     <td th:text="${user.lastName}"></td>
                     <td th:text="${user.firstName}"></td>
-                    <td th:text="${roles}"></td>
+                    <td th:text="${user.roles}"></td>
                     <td>
                         <a th:if="${user.enabled == true}" class="fas fa-check-circle fa-2x icon-green"></a>
                         <a th:if="${user.enabled == false}" class="fas fa-check-circle fa-2x icon-dark" href=""></a>
@@ -110,15 +110,44 @@
                     <td>
                         <a th:href="@{'/users/edit/' + ${user.id}}"><i class="fas fa-edit fa-2x icon-green"></i></a>
                          &nbsp;
-                        <a><i class="fas fa-trash-alt fa-2x"></i></a>
+                        <a th:href="@{'/users/delete/' + ${user.id}}" class="link-delete"><i class="fas fa-trash-alt fa-2x"></i></a>
                     </td>
                 </tr>
             </tbody>
         </table>
     </div>
 
+    <div id="confirmModal" class="modal fade text-center">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">주의</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <span>정말 삭제하시겠습니까?</span>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-success" href="" id="delete-btn-yes">YES</a>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">NO</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="text-center">
         <p>Copyright &copy; kimdh-hi</p>
     </div>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $(".link-delete").on("click", function(e) {
+                e.preventDefault();
+                let link = $(this);
+                $("#delete-btn-yes").attr("href", link.attr("href"));
+                $("#confirmModal").modal();
+            });
+        });
+    </script>
 </body>
 </html>

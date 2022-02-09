@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Transactional(readOnly = true)
@@ -63,6 +64,16 @@ public class UserService {
         );
 
         findUser.update(user);
+    }
+
+    @Transactional
+    public void deleteUserById(Long id) {
+        Long exist = userRepository.countById(id);
+        if (Objects.isNull(exist) || exist <= 0) {
+            throw new UserNotFoundException(UserNotFoundException.NOT_FOUND_MESSAGE);
+        }
+
+        userRepository.deleteById(id);
     }
 
     private void encodePassword(User user) {

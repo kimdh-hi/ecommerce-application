@@ -60,8 +60,20 @@ public class UserController {
             List<Role> roles = userService.findRoles();
             model.addAttribute("user", user);
             model.addAttribute("roles", roles);
-            model.addAttribute("pageTitle", "사용자 정보수정");
+            model.addAttribute("pageTitle", "사용자 정보수정 완료");
             return "user_form";
+        } catch (UserNotFoundException e) {
+            redirectAttributes.addFlashAttribute("message", e.getMessage());
+            return "redirect:/users";
+        }
+    }
+
+    @GetMapping("/users/delete/{userId}")
+    public String deleteUser(@PathVariable Long userId, RedirectAttributes redirectAttributes) {
+        try {
+            userService.deleteUserById(userId);
+            redirectAttributes.addFlashAttribute("message", "사용자 정보삭제 완료 id = " + userId);
+            return "redirect:/users";
         } catch (UserNotFoundException e) {
             redirectAttributes.addFlashAttribute("message", e.getMessage());
             return "redirect:/users";

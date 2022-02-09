@@ -79,4 +79,13 @@ public class UserRepositoryTest {
 
         assertThat(empty).isEqualTo(true);
     }
+
+    @Test
+    void countByIdTest() {
+        Long countResult1 = userRepository.countById(1L);
+        Long countResult2 = userRepository.countById(-1L);
+
+        assertThat(countResult1).isGreaterThan(0);
+        assertThat(countResult2).isEqualTo(0L);
+    }
 }
