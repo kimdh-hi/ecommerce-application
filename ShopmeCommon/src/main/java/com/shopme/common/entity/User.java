@@ -35,8 +35,12 @@ public class User {
         this.password = user.password;
         this.firstName = user.firstName;
         this.lastName = user.lastName;
-        this.enabled = user.enabled;
         this.roles = user.getRoles();
+    }
+
+    public void changeEnableStatus(User user) {
+        if (user.isEnabled()) user.setEnabled(false);
+        else user.setEnabled(true);
     }
 
     public User() {}

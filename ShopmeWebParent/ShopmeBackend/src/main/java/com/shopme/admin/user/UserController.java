@@ -79,4 +79,14 @@ public class UserController {
             return "redirect:/users";
         }
     }
+
+    @GetMapping("/users/{userId}/enabled/{status}")
+    public String editEnabledStatus(
+            @PathVariable Long userId, @PathVariable boolean status,
+            RedirectAttributes redirectAttributes) {
+        userService.editEnabledStatus(userId, status);
+        redirectAttributes.addFlashAttribute("message", "사용자 활성화 상태 변경 완료");
+
+        return "redirect:/users";
+    }
 }

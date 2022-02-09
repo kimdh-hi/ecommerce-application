@@ -23,7 +23,7 @@ public class UserRepositoryTest {
     @Test
     void createUserWithOneRole() {
         Role roleAdmin = tem.find(Role.class, 1L);
-        User user = new User("admin@shop.me.com", "1234", "daehuyn", "kim");
+        User user = new User("admin@shop.me.com", "test1234", "daehuyn", "kim");
         user.addRole(roleAdmin);
 
         User savedUser = userRepository.save(user);
@@ -87,5 +87,17 @@ public class UserRepositoryTest {
 
         assertThat(countResult1).isGreaterThan(0);
         assertThat(countResult2).isEqualTo(0L);
+    }
+
+    @Test
+    void updateEnabledStatusTest() {
+        Long userId = 1L;
+        User user = userRepository.findById(userId).get();
+        userRepository.updateEnabledStatus(userId, true);
+
+        User findUser = userRepository.findById(userId).get();
+
+        assertThat(findUser.isEnabled()).isTrue();
+
     }
 }
