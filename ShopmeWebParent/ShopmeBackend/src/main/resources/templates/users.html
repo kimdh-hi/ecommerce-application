@@ -98,7 +98,10 @@
             <tbody>
                 <tr th:each="user: ${users}">
                     <td th:text="${user.id}"></td>
-                    <td><span class="fas fa-portrait fa-3x icon-silver"></span></td>
+                    <td>
+                        <span th:if="${user.thumbnail == null}" class="fas fa-portrait fa-3x icon-silver"></span>
+                        <span th:if="${user.thumbnail != null}" th:src="@{${user.thumbnailPath}}"></span>
+                    </td>
                     <td th:text="${user.email}"></td>
                     <td th:text="${user.lastName}"></td>
                     <td th:text="${user.firstName}"></td>

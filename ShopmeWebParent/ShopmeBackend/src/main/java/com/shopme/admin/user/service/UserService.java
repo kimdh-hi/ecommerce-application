@@ -1,12 +1,18 @@
-package com.shopme.admin.user;
+package com.shopme.admin.user.service;
 
+import com.shopme.admin.user.repository.RoleRepository;
+import com.shopme.admin.user.exception.UserNotFoundException;
+import com.shopme.admin.user.repository.UserRepository;
+import com.shopme.admin.utils.FileUploadUtils;
 import com.shopme.common.entity.Role;
 import com.shopme.common.entity.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -34,9 +40,29 @@ public class UserService {
     }
 
     @Transactional
-    public void save(User user) {
+    public void save(User user, MultipartFile image) throws IOException {
         encodePassword(user);
-        userRepository.save(user);
+        if (!image.isEmpty()) {
+            user.setThumbnail(StringUtils.cleanPath(Objects.requireNonNull(image.getOriginalFilename())));
+            User savedUser = userRepository.save(user);
+            uploadUserThumbnail(savedUser.getId(), image);
+        } else {
+            userRepository.save(user);
+        }
+    }
+
+    @Transactional
+    public void updateUser(User user, MultipartFile image) throws IOException {
+        if (StringUtils.hasText(user.getPassword())) encodePassword(user);
+
+        User findUser = userRepository.findById(user.getId()).orElseThrow(
+                () -> new UserNotFoundException(UserNotFoundException.NOT_FOUND_MESSAGE)
+        );
+        if (!image.isEmpty()) {
+            uploadUserThumbnail(findUser.getId(), image);
+            user.setThumbnail(StringUtils.cleanPath(Objects.requireNonNull(image.getOriginalFilename())));
+        }
+        findUser.update(user);
     }
 
     public boolean isUniqueEmail(Long userId, String email) {
@@ -53,17 +79,6 @@ public class UserService {
         } catch (Exception e) {
             throw new UserNotFoundException(UserNotFoundException.NOT_FOUND_MESSAGE);
         }
-    }
-
-    @Transactional
-    public void updateUser(User user) {
-        if (StringUtils.hasText(user.getPassword())) encodePassword(user);
-
-        User findUser = userRepository.findById(user.getId()).orElseThrow(
-                () -> new UserNotFoundException(UserNotFoundException.NOT_FOUND_MESSAGE)
-        );
-
-        findUser.update(user);
     }
 
     @Transactional
@@ -86,5 +101,10 @@ public class UserService {
         user.setPassword(encodedPassword);
     }
 
+    private void uploadUserThumbnail(Long userId, MultipartFile file) throws IOException {
+        String fileName = file.getOriginalFilename();
+        String uploadDir = FileUploadUtils.USER_THUMBNAIL_PATH + "/" + userId;
 
+        FileUploadUtils.save(uploadDir , fileName, file);
+    }
 }

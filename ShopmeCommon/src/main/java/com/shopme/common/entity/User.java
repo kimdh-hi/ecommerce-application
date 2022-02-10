@@ -3,6 +3,7 @@ package com.shopme.common.entity;
 import javax.persistence.*;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -20,7 +21,7 @@ public class User {
     @Column(name = "last_name", length = 45, nullable = false)
     private String lastName;
     @Column(length = 64)
-    private String photos;
+    private String thumbnail;
     private boolean enabled;
 
     @ManyToMany
@@ -30,19 +31,6 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
-    public void update(User user) {
-        this.email = user.email;
-        this.password = user.password;
-        this.firstName = user.firstName;
-        this.lastName = user.lastName;
-        this.roles = user.getRoles();
-    }
-
-    public void changeEnableStatus(User user) {
-        if (user.isEnabled()) user.setEnabled(false);
-        else user.setEnabled(true);
-    }
-
     public User() {}
 
     public User(String email, String password, String firstName, String lastName) {
@@ -50,6 +38,26 @@ public class User {
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
+    }
+
+    public void update(User user) {
+        this.email = user.email;
+        this.password = user.password;
+        this.firstName = user.firstName;
+        this.lastName = user.lastName;
+        this.roles = user.getRoles();
+        this.thumbnail = user.thumbnail;
+    }
+
+    public void changeEnableStatus(User user) {
+        if (user.isEnabled()) user.setEnabled(false);
+        else user.setEnabled(true);
+    }
+
+    @Transient
+    public String getThumbnailPath() {
+        if (Objects.isNull(id) || Objects.isNull(thumbnail)) return "/images/default-thumbnail.png";
+        return "/user-thumbnail/" + id + "/" + this.thumbnail;
     }
 
     public Long getId() {
@@ -72,8 +80,8 @@ public class User {
         return lastName;
     }
 
-    public String getPhotos() {
-        return photos;
+    public String getThumbnail() {
+        return thumbnail;
     }
 
     public void setId(Long id) {
@@ -96,8 +104,8 @@ public class User {
         this.lastName = lastName;
     }
 
-    public void setPhotos(String photos) {
-        this.photos = photos;
+    public void setThumbnail(String photos) {
+        this.thumbnail = photos;
     }
 
     public void setEnabled(boolean enabled) {

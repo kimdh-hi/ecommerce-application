@@ -1,5 +1,6 @@
 package com.shopme.admin.user;
 
+import com.shopme.admin.user.repository.RoleRepository;
 import com.shopme.common.entity.Role;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -15,7 +16,8 @@ import java.util.List;
 @Rollback(false)
 public class RoleRepositoryTest {
 
-    @Autowired RoleRepository roleRepository;
+    @Autowired
+    RoleRepository roleRepository;
 
     @Test
     void createFirstRoleTest() {

@@ -1,14 +1,21 @@
-package com.shopme.admin.user;
+package com.shopme.admin.user.controller;
 
+import com.shopme.admin.user.exception.UserNotFoundException;
+import com.shopme.admin.user.service.UserService;
+import com.shopme.admin.utils.FileUploadUtils;
 import com.shopme.common.entity.Role;
 import com.shopme.common.entity.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
@@ -40,13 +47,16 @@ public class UserController {
     }
 
     @PostMapping("/users/save")
-    public String saveUser(User user, RedirectAttributes redirectAttributes) {
+    public String saveUser(
+            User user, RedirectAttributes redirectAttributes,
+            @RequestParam MultipartFile image) throws IOException {
+
         if (Objects.isNull(user.getId())) {
-            userService.save(user);
+            userService.save(user, image);
             redirectAttributes.addFlashAttribute("message", "사용자 추가 완료");
         }
         else {
-            userService.updateUser(user);
+            userService.updateUser(user, image);
             redirectAttributes.addFlashAttribute("message", "사용자 정보변경 완료");
         }
 
@@ -89,4 +99,6 @@ public class UserController {
 
         return "redirect:/users";
     }
+
+
 }

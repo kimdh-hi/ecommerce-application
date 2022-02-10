@@ -1,14 +1,17 @@
 package com.shopme.admin.user;
 
+import com.shopme.admin.user.repository.UserRepository;
 import com.shopme.common.entity.Role;
 import com.shopme.common.entity.User;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.annotation.Rollback;
+
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -17,7 +20,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Rollback(false)
 public class UserRepositoryTest {
 
-    @Autowired UserRepository userRepository;
+    @Autowired
+    UserRepository userRepository;
     @Autowired TestEntityManager tem;
 
     @Test
@@ -100,4 +104,6 @@ public class UserRepositoryTest {
         assertThat(findUser.isEnabled()).isTrue();
 
     }
+
+
 }
